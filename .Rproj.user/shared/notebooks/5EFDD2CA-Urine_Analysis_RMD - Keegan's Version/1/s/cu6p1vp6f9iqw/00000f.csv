@@ -1,0 +1,2 @@
+"0","working.difference <- Urine.Differences %>% filter(SampleID == '2b')"
+"0","acf(working.difference$Diff, lag.max = 200, main = 'Weak Signal (Noise?)')"

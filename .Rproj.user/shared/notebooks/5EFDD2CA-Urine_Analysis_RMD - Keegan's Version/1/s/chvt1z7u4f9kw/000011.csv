@@ -1,0 +1,4 @@
+"0","working.difference <- Urine.Differences %>% filter(SampleID == '1a')"
+"0","working.indicators <- run.indicators(working.difference$Diff)"
+"0","working.roughness <- updown.count(working.indicators)"
+"0","ggplot(working.roughness, aes(x = log(RunSize))) + geom_histogram() + facet_grid(.~`Up/Down`)"

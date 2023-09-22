@@ -1,0 +1,4 @@
+"0","### View of spline fit on upper region"
+"0","work.upper %>% ggplot(aes(x = Temperature, y = dCp)) + geom_point() + "
+"0","  geom_line(data = spline.upper.fit, aes(x = Temperature, y = fit), color = 'red') + "
+"0","  labs(title = 'Spline Fit Upper Region')"

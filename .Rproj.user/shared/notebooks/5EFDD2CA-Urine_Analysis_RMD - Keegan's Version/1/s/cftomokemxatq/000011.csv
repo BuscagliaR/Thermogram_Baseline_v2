@@ -1,0 +1,4 @@
+"0","### View of final sample above baseline procedure"
+"0","g.final <- final.sample %>% ggplot(aes(x = Temperature, y = dCp)) + geom_point() +"
+"0","  labs(title = 'Baseline Subtracted Sample')"
+"0","cowplot::plot_grid(g.final, g.spline, nrow=2)"
