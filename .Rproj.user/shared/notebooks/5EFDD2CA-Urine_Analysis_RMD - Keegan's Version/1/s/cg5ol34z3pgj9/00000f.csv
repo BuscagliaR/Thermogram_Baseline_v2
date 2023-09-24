@@ -1,0 +1,3 @@
+"0","### Save image for easy data reloading // clear all other elements"
+"0","rm(list = setdiff(ls(), c('Urine.Working')))"
+"0","save.image('data/Urine_Working.RData') ### This should only be run once"

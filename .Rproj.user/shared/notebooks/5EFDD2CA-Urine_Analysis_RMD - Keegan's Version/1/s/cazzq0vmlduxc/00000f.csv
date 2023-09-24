@@ -1,2 +1,2 @@
-"0","rm(list = setdiff(ls(), 'ACF.detect'))"
+"0","#rm(list = setdiff(ls(), 'ACF.detect'))"
 "0","save.image('data/ACF_Detect.RData')"

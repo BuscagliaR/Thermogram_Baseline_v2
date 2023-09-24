@@ -18,7 +18,7 @@
 "0","### @function"
 "0","baseline.subtraction.byhand <- function(x, lwr.temp, upr.temp, plot.on = TRUE)"
 "0","{"
-"0","  ### check-conditions of boundaires - this effects automation"
+"0","  ### check-conditions of boundaries - this effects automation"
 "0","  if(lwr.temp < min(x$Temperature)+1) lwr.temp = lwr.temp + 1"
 "0","  if(upr.temp > max(x$Temperature)-1) upr.temp = upr.temp - 1"
 "0","  ### Extract the baseline regions"
