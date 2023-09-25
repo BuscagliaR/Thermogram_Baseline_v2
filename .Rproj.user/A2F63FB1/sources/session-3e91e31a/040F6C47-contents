@@ -743,7 +743,7 @@ moving.window <- function(x, w = 90, exclusion.lwr = 60, exclusion.upr = 80)
   }
   ### where was the minimum variance?
   low <- df.var %>% filter(sd == min(sd))
-  lower <- working.sample$Temperature[low$temp.stop-w]
+  lower <- working.sample$Temperature
   
   ### total size of thermogram
   cat('Scanning Upper. \n')
