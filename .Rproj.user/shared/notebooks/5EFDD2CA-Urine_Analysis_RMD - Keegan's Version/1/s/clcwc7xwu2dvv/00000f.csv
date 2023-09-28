@@ -12,6 +12,24 @@
 "0","  colnames(temp.col)[1:2] <- c('Temperature', 'dCp')"
 "0","  Urine.Working <- Urine.Working %>% rbind(temp.col)"
 "0","}"
+"2","Warning: Using an external vector in selections was deprecated in tidyselect 1.1.0.
+Please use `all_of()` or `any_of()` instead.
+# Was:
+data %>% select(lwr)
+
+# Now:
+data %>% select(all_of(lwr))
+
+See <https://tidyselect.r-lib.org/reference/faq-external-vector.html>."
+"2","Warning: Using an external vector in selections was deprecated in tidyselect 1.1.0.
+Please use `all_of()` or `any_of()` instead.
+# Was:
+data %>% select(upr)
+
+# Now:
+data %>% select(all_of(upr))
+
+See <https://tidyselect.r-lib.org/reference/faq-external-vector.html>."
 "1","20"
 "1"," "
 "1"," of "
