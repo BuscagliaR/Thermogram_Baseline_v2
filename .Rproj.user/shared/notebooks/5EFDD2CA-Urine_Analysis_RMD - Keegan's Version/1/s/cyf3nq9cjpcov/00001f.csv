@@ -1,0 +1,34 @@
+"0","output1 <- moving.window("
+"0","  x = working.sample,"
+"0","  w = 90,"
+"0","  exclusion.lwr = 60,"
+"0","  exclusion.upr = 80,"
+"0","  point.selection = ""outmost"""
+"0",")"
+"1","Scanning Lower. 
+"
+"1","Scanning Upper. 
+"
+"0","output2 <- moving.window("
+"0","  x = working.sample,"
+"0","  w = 90,"
+"0","  exclusion.lwr = 60,"
+"0","  exclusion.upr = 80,"
+"0","  point.selection = ""innermost"""
+"0",")"
+"1","Scanning Lower. 
+"
+"1","Scanning Upper. 
+"
+"0","output3 <- moving.window("
+"0","  x = working.sample,"
+"0","  w = 90,"
+"0","  exclusion.lwr = 60,"
+"0","  exclusion.upr = 80,"
+"0","  point.selection = ""mid"""
+"0",")"
+"1","Scanning Lower. 
+"
+"1","Scanning Upper. 
+"
+"0","output1"

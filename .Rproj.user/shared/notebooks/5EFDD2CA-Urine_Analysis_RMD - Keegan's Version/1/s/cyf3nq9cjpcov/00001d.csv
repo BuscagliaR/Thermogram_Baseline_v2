@@ -6,7 +6,8 @@
 "0","  x = working.sample,"
 "0","  w = 90,"
 "0","  exclusion.lwr = 60,"
-"0","  exclusion.upr = 80"
+"0","  exclusion.upr = 80,"
+"0","  point.selection = ""outmost"""
 "0",")"
 "1","Scanning Lower. 
 "

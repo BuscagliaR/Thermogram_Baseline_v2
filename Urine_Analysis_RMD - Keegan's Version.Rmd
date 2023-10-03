@@ -718,10 +718,21 @@ Lets write a function that will apply the moving-window approach to a provided s
 ### w : window size (default 90, try others!)
 ### exclusion.lwr : lower temperature exclusion point
 ### exclusion.upr : upper temperature exclusion point
+### point.selection : what point is chosen in the window (outmost, innermost, mid)
 ###
 ### @function
-moving.window <- function(x, w = 90, exclusion.lwr = 60, exclusion.upr = 80)
+moving.window <- function(x, w = 90, exclusion.lwr = 60, exclusion.upr = 80, point.selection = "outmost")
 {
+  if(point.selection == "outmost"){
+    k <- w
+  }
+  if(point.selection == "innermost"){
+    k <- 0
+  }
+  if(point.selection == "mid"){
+    k <- round(w/2)
+  }
+  
   ### fit a CV spline
   full.spline.fit <- smooth.spline(x$Temperature, x$dCp, cv=TRUE)
   ### spline residuals into a data.frame with ids for tracking.
@@ -734,7 +745,7 @@ moving.window <- function(x, w = 90, exclusion.lwr = 60, exclusion.upr = 80)
   i=0
   df.var <- data.frame()
   ### how far do we need to scan?
-  points.in.lower <- nrow(working.sample %>% filter(Temperature < exclude.lwr))
+  points.in.lower <- nrow(working.sample %>% filter(Temperature < exclusion.lwr))
   ### scan and calculate variance for each window
   while ((w+i) < points.in.lower){
    rout <- r.df %>% slice((1+i):(w+i)) %>% summarise(temp.stop=(w+i),mean = mean(r), sd=sd(r))
@@ -743,7 +754,7 @@ moving.window <- function(x, w = 90, exclusion.lwr = 60, exclusion.upr = 80)
   }
   ### where was the minimum variance?
   low <- df.var %>% filter(sd == min(sd))
-  lower <- working.sample$Temperature[low$temp.stop-w+1]
+  lower <- working.sample$Temperature[low$temp.stop-k+1]
   
   ### total size of thermogram
   cat('Scanning Upper. \n')
@@ -751,7 +762,7 @@ moving.window <- function(x, w = 90, exclusion.lwr = 60, exclusion.upr = 80)
   j=0
   df.var.upper <- data.frame()
   ### how far from upper endpoint do we need to scan?
-  smallest.point.in.upr <- nrow(working.sample) - nrow(working.sample %>% filter(Temperature > exclude.upr))
+  smallest.point.in.upr <- nrow(working.sample) - nrow(working.sample %>% filter(Temperature > exclusion.upr))
   ### scan from highest point to region of exclusion
   while ((l-w-j) > smallest.point.in.upr) {
     rout <- r.df %>% slice((l-w-j):(l-j)) %>% summarise(i=(l-w-j),mean = mean(r), sd=sd(r))
@@ -760,7 +771,7 @@ moving.window <- function(x, w = 90, exclusion.lwr = 60, exclusion.upr = 80)
   }
   ### where was the minimum variance?
   up <- df.var.upper %>% filter(sd == min(sd))
-  upper <- working.sample$Temperature[up$i+w]
+  upper <- working.sample$Temperature[up$i+k]
   
   output <- data.frame(lower = lower, upper = upper)
   return(output)
@@ -779,8 +790,37 @@ moving.window(
   x = working.sample,
   w = 90,
   exclusion.lwr = 60,
-  exclusion.upr = 80
+  exclusion.upr = 80,
+  point.selection = "outmost"
 )
+
+output1 <- moving.window(
+  x = working.sample,
+  w = 90,
+  exclusion.lwr = 60,
+  exclusion.upr = 80,
+  point.selection = "outmost"
+)
+
+output2 <- moving.window(
+  x = working.sample,
+  w = 90,
+  exclusion.lwr = 60,
+  exclusion.upr = 80,
+  point.selection = "innermost"
+)
+
+output3 <- moving.window(
+  x = working.sample,
+  w = 90,
+  exclusion.lwr = 60,
+  exclusion.upr = 80,
+  point.selection = "mid"
+)
+
+output1
+output2
+output3
 ```
 
 Before trying to wrap this all together into a fully automated approach, here is what we get if we use different window sizes for sample `1a`, keeping the same exclusion window.
@@ -794,23 +834,12 @@ for(j in 1:length(w.sizes))
     x = working.sample,
     w = w.sizes[j],
     exclusion.lwr = 60,
-    exclusion.upr = 80)
+    exclusion.upr = 80,
+    point.selection = "outmost")
   out <- out %>% mutate(w = w.sizes[j]) %>% relocate(w)
   window.df <- window.df %>% rbind(out)
 }
 window.df
-
-for(j in 1:length(w.sizes))
-{
-  out <- moving.window.2(
-    x = working.sample,
-    w = w.sizes[j],
-    exclusion.lwr = 60,
-    exclusion.upr = 80)
-  out <- out %>% mutate(w = w.sizes[j]) %>% relocate(w)
-  window.df.2 <- window.df.2 %>% rbind(out)
-}
-window.df.2
 ```
 
 As can be seen, when using too large or too small of a window, certain regions may be overshot.  In this example, `w` between 90 and 120 seems to return a consistent result, whereas outside this size, either the upper or lower is poorly estimated.
@@ -879,7 +908,8 @@ auto.baseline <- function(x, w = 90, exclusion.lwr = 60, exclusion.upr = 80,
   x = working.sample,
   w = 90,
   exclusion.lwr = 60,
-  exclusion.upr = 80)
+  exclusion.upr = 80,
+  point.selection = "outmost")
 ### baseline subtraction with auto-selected upr/lwr points
   baseline.output <- baseline.subtraction.byhand(
   x = working.sample, 
@@ -940,7 +970,7 @@ for(j in 1:n.samples)
 
 colnames(Urine.Final.Data)[-1] <- All.IDs
 ### Only run the below once!!
-write.csv(x = Urine.Final.Data, file = 'generated_output/Final_Urine_Results.csv')
+#write.csv(x = Urine.Final.Data, file = 'generated_output/Final_Urine_Results.csv')
 ```
 
 
