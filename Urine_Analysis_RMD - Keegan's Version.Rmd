@@ -556,22 +556,7 @@ Now that we have a function that will do the baseline procedure, lets wrap-up th
 ### plot.on : outputs a graphic of interpolated sample?
 ###
 ### @function
-final.sample.interpolate <- function(x, grid.temp, plot.on = TRUE)
-{
-  spline.fit <- smooth.spline(x$Temperature, x$dCp, cv = TRUE)
-  interpolated.sample.pred <- predict(spline.fit, grid.temp)
-  interpolated.sample <- data.frame(Temperature = grid.temp, 
-                                    dCp = interpolated.sample.pred$y)
-  
-  if(plot.on)
-  {
-    g.out <- ggplot(interpolated.sample, aes(x = Temperature, y = dCp)) + geom_point() +
-      labs(title = 'Interpolated Result')
-    print(g.out)
-  }
-  
-  return(interpolated.sample)
-}
+
 ```
 
 Here is its use given the `baseline.output` result from the previous function.
@@ -901,15 +886,16 @@ We can now apply to this all samples in the urine data set.  We will stick with 
 ###
 ### @function
 auto.baseline <- function(x, w = 90, exclusion.lwr = 60, exclusion.upr = 80,
-                          grid.temp = seq(45, 90, 0.1), plot.on = FALSE)
+                          grid.temp = seq(45, 90, 0.1), plot.on = FALSE, 
+                          point.selection = "outmost")
 {
   ### automate selection of endpoints
   endpoints <- moving.window(
   x = working.sample,
   w = 90,
   exclusion.lwr = 60,
-  exclusion.upr = 80,
-  point.selection = "outmost")
+  exclusion.upr = 80, 
+  point.selection = point.selection)
 ### baseline subtraction with auto-selected upr/lwr points
   baseline.output <- baseline.subtraction.byhand(
   x = working.sample, 

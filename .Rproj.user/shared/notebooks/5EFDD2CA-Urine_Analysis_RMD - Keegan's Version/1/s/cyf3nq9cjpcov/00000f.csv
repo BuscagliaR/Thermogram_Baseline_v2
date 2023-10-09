@@ -1,0 +1,15 @@
+"0","### select a sample"
+"0","working.sample <- Urine.Working.Final %>% filter(SampleID == '1a') %>% "
+"0","  select(Temperature, dCp)"
+"0","### Automate the selection of the endpoints"
+"0","moving.window("
+"0","  x = working.sample,"
+"0","  w = 90,"
+"0","  exclusion.lwr = 60,"
+"0","  exclusion.upr = 80,"
+"0","  point.selection = ""outmost"""
+"0",")"
+"1","Scanning Lower. 
+"
+"1","Scanning Upper. 
+"
