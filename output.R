@@ -313,13 +313,44 @@ Sample_Names <- colnames(thing1)[-1]
 colnames(thing2)[-1] <- All.IDs
 Sample_Names <- colnames(thing2)[-1]
 
+colnames(thing3)[-1] <- All.IDs
+Sample_Names <- colnames(thing3)[-1]
+
 one.sample <- thing1 %>% select(Temperature,Sample_Names[1] )
 
-g1 <- thing1 %>% select(Temperature, Sample_Names[1]) 
-
+g1 <- thing1 %>% select(Temperature, Sample_Names[1])
+g1 <- g1 %>% mutate(method = "Inner")
 g2 <- thing2 %>% select(Temperature, Sample_Names[1])
+g2<- g2 %>% mutate(method = "Outer")
+g3 <- thing3 %>% select(Temperature, Sample_Names[1])
+g3<- g3 %>% mutate(method = "Mid")
 
-totalframe <- cbind(g1,g2)
-colnames(totalframe) <- c("Temperature", "Inner", "Temperature", "Outer")
+totalframe <- rbind(g1,g2,g3)
 
-ggplot(totalframe, aes())
+ggplot(totalframe, aes(x = Temperature,y = totalframe[,2], color=method))+
+  geom_line()
+
+
+pdf('generated_output/Plots_of_Varying_point_selection.pdf')
+{
+gs <- NULL
+for(i in 1:n.samples)
+{
+  g1 <- thing1 %>% select(Temperature, Sample_Names[i])
+  g1 <- g1 %>% mutate(method = "Inner")
+  g2 <- thing2 %>% select(Temperature, Sample_Names[i])
+  g2<- g2 %>% mutate(method = "Outer")
+  g3 <- thing3 %>% select(Temperature, Sample_Names[i])
+  g3<- g3 %>% mutate(method = "Mid")
+  
+  totalframe <- rbind(g1,g2,g3)
+  
+  gs <- ggplot(totalframe, aes(x = Temperature,y = totalframe[,2], color=method))+
+    geom_point(size = 0.5)
+  print(gs)
+}
+}
+dev.off()
+
+
+write.csv(x = final.table, file = 'generated_output/Endpoint_Table.csv')
