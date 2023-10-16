@@ -1,0 +1,38 @@
+---
+title: "How to grab a sample"
+author: "Keegan Line"
+date: "2023-09-26"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+This r markdown will show you how to grab indivdial samples from the data set.
+
+Here I am loading the data set and loading packages
+
+```{r include=FALSE}
+library(tidyverse)
+load('data/Urine_Working.RData')
+```
+
+The sample IDs will all be stored in this variable
+
+```{r, include=TRUE}
+### Store all sampleID for future use
+All_Urine_ID <- Urine.Working %>% pull(SampleID) %>% unique() %>% as.vector()
+head(All_Urine_ID)
+```
+
+Here is how to grab a sample given the ID. Below I have the sample 1a. I am showing the heading of the data set and then the graph of the sample sample 1a
+
+```{r}
+working.sample <- Urine.Working %>% filter(SampleID == All_Urine_ID[1])
+All_Urine_ID[1]
+
+head(working.sample)
+ggplot(working.sample, aes(x = Temperature, y = dCp)) + geom_line()
+```
+

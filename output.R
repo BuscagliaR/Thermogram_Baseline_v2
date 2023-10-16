@@ -331,7 +331,7 @@ ggplot(totalframe, aes(x = Temperature,y = totalframe[,2], color=method))+
   geom_line()
 
 
-pdf('generated_output/Plots_of_Varying_point_selection.pdf')
+pdf('generated_output/Plots_of_Varying_point_selection_with_names.pdf')
 {
 gs <- NULL
 for(i in 1:n.samples)
@@ -346,11 +346,27 @@ for(i in 1:n.samples)
   totalframe <- rbind(g1,g2,g3)
   
   gs <- ggplot(totalframe, aes(x = Temperature,y = totalframe[,2], color=method))+
-    geom_point(size = 0.5)
+    geom_point(size = 0.5)+
+    labs(title = paste0('Final Automated Sample for ', str_sub(All_Urine_ID[i], 1)))
   print(gs)
 }
 }
 dev.off()
 
 
-write.csv(x = final.table, file = 'generated_output/Endpoint_Table.csv')
+
+write.csv(x = totalframe, file = 'generated_output/graphable_Table.csv')
+
+totalframe <- Endpoint_Table
+
+pdf('generated_output/Plots_of_Varying_point_selection_with_names.pdf')
+{
+  gs <- NULL
+  for(i in 1:n.samples){
+    gs <- ggplot(totalframe, aes(x = Temperature,y = totalframe[,2], color=method))+
+      geom_point(size = 0.5)+
+      labs(title = paste0('Final Automated Sample for ', str_sub(All_Urine_ID[i], 1)))
+    print(gs)
+  }
+}
+dev.off()
