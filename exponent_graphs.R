@@ -9,12 +9,19 @@ load('data/Urine_Working.RData')
 #Our cutting parameter
 t <- 4
 
-pdf('generated_output/Urine_Raw_Data_Exponent_Cut.pdf')
+pdf('generated_output/Urine_Raw_Data_Exponent_Cut_trial_2.pdf')
 {
 for(i in 1:length(All_Urine_ID)){
   #set up data
   working <- Urine.Working.Final %>% filter(SampleID==All_Urine_ID[i])
-  working <- working %>% mutate(edCp = exp(dCp))
+  if(min(working$dCp) < 0){
+    shifted_dCp = working$dCp + abs(min(working$dCp))
+  }
+  else{
+    shifted_dCp = working$dCp - abs(min(working$dCp))
+  }
+  working <- working %>% mutate(shifted_dCp = shifted_dCp)
+  working <- working %>% mutate(edCp = exp(shifted_dCp))
   number_points <- working %>% summarise(count = n())
   t <- 4
   
@@ -30,8 +37,10 @@ for(i in 1:length(All_Urine_ID)){
                                                                                 #max = max(Temperature))%>% as.vector()
   leftover_points <- working %>% filter(edCp >= max(edCp)/t) %>% summarise(count = n())
   
-  if(leftover_points$count[1] < 0.25*number_points$count[1]){
-    t = t*2
+  non_zero <- working %>% filter(edCp != 0) %>% summarise(count = n())
+  
+  if(leftover_points$count[1] < 0.20*non_zero$count[1]){ #0.25*number_points$count[1]
+    t = t #t*2
   }
   else{
     x = 1
@@ -42,7 +51,7 @@ for(i in 1:length(All_Urine_ID)){
   g <- ggplot(working, aes(x = Temperature, y = edCp))+
     geom_line()+
     labs(title = paste0('Exponentiated with Zero Replaced of Sample ', str_sub(All_Urine_ID[i], 1)))
-  g1 <- ggplot(working, aes(x = Temperature, y= dCp))+
+  g1 <- ggplot(working, aes(x = Temperature, y= shifted_dCp))+
     geom_line()
   multiplot(g,g1)
 }

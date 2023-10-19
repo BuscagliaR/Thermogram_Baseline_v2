@@ -357,15 +357,17 @@ dev.off()
 
 write.csv(x = totalframe, file = 'generated_output/graphable_Table.csv')
 
-totalframe <- Endpoint_Table
+totalframe <- thing1
 
-pdf('generated_output/Plots_of_Varying_point_selection_with_names.pdf')
+pdf('generated_output/Innnermost_graphs.pdf')
 {
   gs <- NULL
-  for(i in 1:n.samples){
-    gs <- ggplot(totalframe, aes(x = Temperature,y = totalframe[,2], color=method))+
+  for(i in 1:length(All_Urine_ID)){
+    thing_to_plot <- totalframe %>% select(Temperature, Sample_Names[i])
+    gs <- ggplot(thing_to_plot, aes(x = Temperature,y = thing_to_plot[,2]))+
       geom_point(size = 0.5)+
-      labs(title = paste0('Final Automated Sample for ', str_sub(All_Urine_ID[i], 1)))
+      labs(title = paste0('Final Automated Sample for ', str_sub(All_Urine_ID[i], 1)))+
+      ylab("dCp")
     print(gs)
   }
 }
