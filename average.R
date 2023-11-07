@@ -24,7 +24,10 @@ for(i in 1:max){
   new_frame <- new_frame %>% rbind(table)
 }
 
+grid.temp <- seq(45, 90, 0.1)
 
+### Setup frame to store all data generated
+Urine.Final.Data <- data.frame(Temperature = grid.temp)
 
 Urine.Final.Data <- data.frame(Temperature = grid.temp)
 for(i in 1:length(All_Urine_ID)){
@@ -42,7 +45,14 @@ for(i in 1:length(All_Urine_ID)){
   Urine.Final.Data <- Urine.Final.Data %>% cbind(out = final.sample$dCp)
 }
 
-colnames(Urine.Final.Data)[-1] <- All.IDs
+colnames(Urine.Final.Data)[-1] <- All_Urine_ID
+
+
+write.csv(x = Urine.Final.Data, file = 'generated_output/Same_Endpoint_Graphs.csv')
+
+#rm(list=setdiff(ls(),c("All_Urine_ID", "Inner_Endpoint_Table", "Urine.Final.Data")))
+
+#save.image('generated_output/Inner_Average.RData')
 
 pdf('generated_output/Same_Endpoint_Graphs.pdf')
 {
@@ -69,16 +79,22 @@ new_frame <- Urine.Final.Data
 colnames(new_frame)[-1] <- numbers
 
 
+urine2 <- Urine.Final.Data %>% pivot_longer(names_to = "Sample_ID", values_to = "dCp", 2:782)
+
+urine2 <- urine2 %>% mutate(sample_number = str_extract(Sample_ID, '\\d+'), sample_rep = str_extract(Sample_ID, '\\D+'))
+
+
+numbers <- urine2 %>% pull(sample_number) %>% unique()
+
 pdf('generated_output/Same_Endpoint_Graphs_Double.pdf')
 {
   gs <- NULL
-  for(i in 1:n.samples)
+  for(i in 1:length(numbers))
   {
-    thing <- Urine.Final.Data %>% select(Temperature, numbers[i])
-    g1 <- 
-    gs <- ggplot(g1, aes(x = Temperature,y = g1[,2]))+
-      geom_point(size = 0.5)+
-      labs(title = paste0('Final Automated Sample for ', str_sub(All_Urine_ID[i], 1)))
+    thing <- urine2 %>% filter(sample_number == numbers[i])
+    gs <- ggplot(thing, aes(x = Temperature,y = dCp))+
+      geom_line(linewidth = 1.5, aes(color = sample_rep))+
+      labs(title = paste0('Final Automated Sample for sample number ', numbers[i]))
     print(gs)
   }
 }
