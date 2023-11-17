@@ -4,6 +4,10 @@ library(forecast)
 library(ggplot2)
 load('data/Urine_Working.RData')
 
+head(table.innermost.smaller)
+
+table.innermost.smaller <- table.innermost.smaller %>% mutate(SampleNumber = factor(str_extract(SampleID, '\\d+')))
+
 Endpoint_Table <- read.csv("~/GitHub/Thermogram_Baseline_v2/generated_output/Endpoint_Table.csv")
 
 Endpoint_Table <- Endpoint_Table %>% mutate(SampleNumber = factor(str_extract(SampleID, '\\d+')))
@@ -16,15 +20,15 @@ max <- 393
 
 new_frame <- data.frame()
 for(i in 1:max){
-  table <- Inner_Endpoint_Table %>% filter(i == SampleNumber)
-  average_lower <- mean(table$lower)
-  table <- table %>% mutate(new_lower = average_lower)
-  average_upper <- mean(table$upper)
-  table <- table %>% mutate(new_upper = average_upper)
+  table <- table.innermost.smaller %>% filter(i == SampleNumber)
+  new_lower <- max(table$lower)
+  table <- table %>% mutate(new_lower = new_lower)
+  new_upper <- min(table$upper)
+  table <- table %>% mutate(new_upper = new_upper)
   new_frame <- new_frame %>% rbind(table)
 }
 
-grid.temp <- seq(45, 90, 0.1)
+grid.temp <- seq(54, 86, 0.1)
 
 ### Setup frame to store all data generated
 Urine.Final.Data <- data.frame(Temperature = grid.temp)
@@ -40,7 +44,7 @@ for(i in 1:length(All_Urine_ID)){
     plot.on = FALSE)
   final.sample <- final.sample.interpolate(
     x = baseline.output, 
-    grid.temp = seq(45, 90, 0.1),
+    grid.temp = seq(54, 86, 0.1),
     plot.on = FALSE)
   Urine.Final.Data <- Urine.Final.Data %>% cbind(out = final.sample$dCp)
 }
@@ -48,7 +52,7 @@ for(i in 1:length(All_Urine_ID)){
 colnames(Urine.Final.Data)[-1] <- All_Urine_ID
 
 
-write.csv(x = Urine.Final.Data, file = 'generated_output/Same_Endpoint_Graphs.csv')
+write.csv(x = Urine.Final.Data, file = 'generated_output/Same_Inner_Endpoint_Graphs.csv')
 
 #rm(list=setdiff(ls(),c("All_Urine_ID", "Inner_Endpoint_Table", "Urine.Final.Data")))
 
@@ -86,7 +90,7 @@ urine2 <- urine2 %>% mutate(sample_number = str_extract(Sample_ID, '\\d+'), samp
 
 numbers <- urine2 %>% pull(sample_number) %>% unique()
 
-pdf('generated_output/Same_Endpoint_Graphs_Double.pdf')
+pdf('generated_output/Same_Inner_Endpoint_Graphs_Double.pdf')
 {
   gs <- NULL
   for(i in 1:length(numbers))

@@ -217,15 +217,16 @@ for(i in 1:n.samples){
   print(i)
 }
 
+Urine.Working.Final <- Urine.Working.Final %>% filter(between(Temperature, 54, 86))
 
-table.innermost <- data.frame()
+table.innermost.smaller <- data.frame()
 for(i in 1:n.samples){
   working.sample <- Urine.Working.Final %>% 
     filter(SampleID == All.IDs[i]) %>% 
     select(Temperature, dCp)
-  thing <- moving.window(x = working.sample, point.selection = "innermost")
+  thing <- moving.window(x = working.sample,w=60, point.selection = "innermost")
   thing <- thing %>% cbind(SampleID = All.IDs[i])
-  table.innermost <- table.innermost %>% rbind(thing)
+  table.innermost.smaller <- table.innermost.smaller %>% rbind(thing)
   print(i)
 }
 
