@@ -1,27 +1,27 @@
 {
-    "id": "D155229F",
-    "path": "~/GitHub/Thermogram_Baseline_v2/average.R",
-    "project_path": "average.R",
+    "id": "A70E1BB5",
+    "path": "~/GitHub/Thermogram_Baseline_v2/exponent_graphs.R",
+    "project_path": "exponent_graphs.R",
     "type": "r_source",
-    "hash": "2027983268",
+    "hash": "0",
     "contents": "",
     "dirty": false,
-    "created": 1699319159571.0,
+    "created": 1696964958466.0,
     "source_on_save": false,
-    "relative_order": 5,
+    "relative_order": 6,
     "properties": {
         "tempName": "Untitled1",
         "source_window_id": "",
         "Source": "Source",
-        "cursorPosition": "98,38",
-        "scrollLine": "94"
+        "cursorPosition": "94,1",
+        "scrollLine": "93"
     },
     "folds": "",
-    "lastKnownWriteTime": 1700237557,
+    "lastKnownWriteTime": 1697588989,
     "encoding": "UTF-8",
     "collab_server": "",
     "source_window": "",
-    "last_content_update": 1700237557075,
+    "last_content_update": 1697588989608,
     "read_only": false,
     "read_only_alternatives": []
 }
