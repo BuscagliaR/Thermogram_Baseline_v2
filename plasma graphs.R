@@ -1,6 +1,7 @@
 library(tidyverse)
 library(knitr)
 library(forecast)
+library(gridExtra)
 
 baseline.subtraction.byhand <- function(x, lwr.temp, upr.temp, plot.on = TRUE)
 {
@@ -262,20 +263,32 @@ numbers <- thing %>% pull(SampleNumber) %>% unique()
 
 other.thing <- Plasma.Working.Corrected %>% filter(between(Temperature, 45, 90))
 
-pdf('generated_output/Plasma_Final_Auto_Graphics.pdf')
+pdf('generated_output/Plasma_Final_Auto_Graphics_Eight.pdf')
 {
+g<-NULL
 for(i in 1:length(numbers)){
-  sample1 <- thing %>% filter(SampleNumber == numbers[i]) %>% mutate(method = str_c("Auto",SampleIteration,sep=" "))
-  sample2 <- other.thing %>% filter(SampleNumber == numbers[i]) %>% mutate(method = str_c("Tech",SampleIteration,sep=" "))
+  sample1 <- thing %>% filter(SampleNumber == numbers[i]) %>% mutate(method = str_c("Auto",SampleIteration,sep=" ")) %>% mutate(type = "Auto")
+  sample2 <- other.thing %>% filter(SampleNumber == numbers[i]) %>% mutate(method = str_c("Tech",SampleIteration,sep=" ")) %>% mutate(type = "Not Auto")
   
   combinded <- sample1 %>% rbind(sample2)
   
-  g<- ggplot(combinded, aes(Temperature, dCp, color = method))+
+  g[[i]]<- ggplot(combinded, aes(Temperature, dCp, color = method, linetype = type))+
     geom_line()+
     scale_color_manual(breaks = c("Auto a", "Auto b", "Tech a", "Tech b"),
                        values=c("green1", "red1", "green4", "red4"))+
-    labs(title = paste0('Final Automated Sample for ', str_sub(numbers[i], 1)))
-  print(g)
+    labs(title = paste0('Final Automated Sample for ', str_sub(numbers[i], 1)))+
+    theme(legend.position = "top",
+          legend.key.height = unit(0.10, 'cm'),
+          legend.key.width = unit(0.30, 'cm'),
+          legend.box.spacing = unit(0.20, 'cm'),
+          legend.margin = margin(1, 1, 1, 1),
+          legend.title = element_text(size=5),
+          legend.text=element_text(size=5),
+          title = element_text(size = 8))
 }
+  marrangeGrob(g,nrow=4,ncol=2)
 }
 dev.off()
+
+
+save.image('data/Plasma_Working.RData')
