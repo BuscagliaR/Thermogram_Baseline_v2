@@ -292,3 +292,47 @@ dev.off()
 
 
 save.image('data/Plasma_Working.RData')
+load('data/Plasma_Working.RData')
+
+new_thing <- thing
+other_thing2 <- other.thing
+
+new_thing <- new_thing %>% mutate(new_title = str_c(SampleID,"Auto",sep="_"))
+new_thing2 <- other_thing2 %>% mutate(new_title = str_c(SampleID,"Tech",sep="_"))
+
+new_thing_wide <- new_thing[c("Temperature", "new_title", "dCp")] %>% pivot_wider(names_from = new_title, values_from = dCp)
+new_thing_wide_2 <- new_thing2[c("new_title", "dCp")] %>% pivot_wider(names_from = new_title, values_from = dCp)
+
+data.set <- data.frame(Temperature = grid.temp)
+
+for(i in 1:n.samples){
+  working.sample <- other.thing %>% 
+    filter(SampleID == All.IDs[i]) %>% 
+    select(Temperature, dCp)
+  
+  inter_tech <- final.sample.interpolate(working.sample,grid.temp,plot.on = FALSE)
+  
+  data.set <- data.set %>% cbind(inter_tech[2])
+  print(i)
+}
+
+colnames(data.set)[-1] <- str_c(All.IDs,"Tech",sep="_")
+
+
+final.data.table <- inner_join(data.set,new_thing_wide,by="Temperature")
+
+write.csv(x = final.data.table, file = 'generated_output/Plasma_Data_comparison.csv')
+
+endpoints <- data.frame()
+for(j in 1:n.samples)
+{
+  ### select a sample
+  working.sample <- final.plasma %>% 
+    filter(SampleID == All.IDs[j]) %>% 
+    select(Temperature, dCp)
+  ### get a baseline-subtracted and interpolated final result!
+  auto.output <- moving.window(x = working.sample)
+  endpoints <- endpoints %>% rbind(data.frame(sample = All.IDs[j],lower = auto.output[1], upper=auto.output[2]))
+}
+
+write.csv(x = endpoints, file = 'generated_output/Plasma_Endpoints.csv')
