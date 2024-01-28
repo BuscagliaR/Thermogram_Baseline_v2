@@ -135,10 +135,10 @@ auto.baseline <- function(x, w = 90, exclusion.lwr = 60, exclusion.upr = 80,
 {
   ### automate selection of endpoints
   endpoints <- moving.window(
-    x = working.sample,
-    w = 90,
-    exclusion.lwr = 60,
-    exclusion.upr = 80,
+    x = x,
+    w = w,
+    exclusion.lwr = exclusion.lwr,
+    exclusion.upr = exclusion.upr,
     point.selection = point)
   ### baseline subtraction with auto-selected upr/lwr points
   baseline.output <- baseline.subtraction.byhand(
@@ -239,7 +239,7 @@ for(j in 1:n.samples)
     filter(SampleID == All.IDs[j]) %>% 
     select(Temperature, dCp)
   ### get a baseline-subtracted and interpolated final result!
-  auto.output <- auto.baseline(x = working.sample, grid.temp = grid.temp)
+  auto.output <- auto.baseline(x = working.sample, grid.temp = grid.temp,exclusion.lwr = 48)
   Plasma.Final.Data <- Plasma.Final.Data %>% cbind(out = auto.output$dCp)
   cat("\014")
 }

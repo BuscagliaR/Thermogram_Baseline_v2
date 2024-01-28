@@ -3,7 +3,7 @@
     "path": "~/GitHub/Thermogram_Baseline_v2/auto.baseline.r",
     "project_path": "auto.baseline.r",
     "type": "r_source",
-    "hash": "1225596916",
+    "hash": "0",
     "contents": "",
     "dirty": false,
     "created": 1706150052292.0,
@@ -13,8 +13,8 @@
         "tempName": "Untitled1",
         "source_window_id": "",
         "Source": "Source",
-        "cursorPosition": "12,78",
-        "scrollLine": "7"
+        "cursorPosition": "14,37",
+        "scrollLine": "13"
     },
     "folds": "",
     "lastKnownWriteTime": 1706197140,

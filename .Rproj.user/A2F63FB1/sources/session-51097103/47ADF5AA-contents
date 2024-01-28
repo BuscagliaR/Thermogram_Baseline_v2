@@ -42,3 +42,18 @@ data <- urine_char[,c(3,456:474)]
 library(ggplot2)
 first_obs <- untamptered_data %>% select(c("Temperature", "X1a"))
 ggplot(first_obs, aes(x=Temperature,y=X1a))+geom_point()
+
+Sample_Names <- colnames(untamptered_data)[-1:-2]
+
+pdf('generated_output/graphs.pdf')
+{
+  for(j in 1:length(Sample_Names))
+  {
+    g1 <- untamptered_data %>% select(Temperature, Sample_Names[j]) %>% 
+      ggplot(aes(x = Temperature, y = .[,2])) + 
+      geom_line() + 
+      labs(title = paste0('Final Automated Sample for ', str_sub(Sample_Names[j], 2)))
+    print(g1)
+  }
+}
+dev.off()
