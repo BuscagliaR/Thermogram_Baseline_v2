@@ -1,27 +1,27 @@
 {
-    "id": "DF4272CC",
-    "path": "~/GitHub/Thermogram_Baseline_v2/inner.R",
-    "project_path": "inner.R",
+    "id": "6688EE42",
+    "path": "~/GitHub/Thermogram_Baseline_v2/auto.baseline.r",
+    "project_path": "auto.baseline.r",
     "type": "r_source",
-    "hash": "0",
+    "hash": "1225596916",
     "contents": "",
     "dirty": false,
-    "created": 1706380126418.0,
+    "created": 1706150052292.0,
     "source_on_save": false,
-    "relative_order": 11,
+    "relative_order": 8,
     "properties": {
         "tempName": "Untitled1",
         "source_window_id": "",
         "Source": "Source",
-        "cursorPosition": "18,4",
-        "scrollLine": "18"
+        "cursorPosition": "14,37",
+        "scrollLine": "13"
     },
     "folds": "",
-    "lastKnownWriteTime": 1706472334,
+    "lastKnownWriteTime": 1706197140,
     "encoding": "UTF-8",
     "collab_server": "",
     "source_window": "",
-    "last_content_update": 1706472334069,
+    "last_content_update": 1706197140794,
     "read_only": false,
     "read_only_alternatives": []
 }
