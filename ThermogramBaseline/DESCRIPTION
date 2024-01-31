@@ -1,0 +1,12 @@
+Package: ThermogramBaseline
+Title: Automatically subtracts baseline from thermograms
+Version: 0.0.0.9000
+Authors@R: 
+    person("Robert", "Buscaglia", , "Robert.Buscaglia@nau.edu", role = c("aut", "cre"),
+           comment = c(ORCID = "YOUR-ORCID-ID"))
+Description: The function uses an automatic endpoint detection to select endpoints. With those endpoints, it automatically subtracts the baseline and returns a clean thermogram interpolated on the desired range of temperatures 
+License: `use_mit_license()`, `use_gpl3_license()` or friends to pick a
+    license
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.2.3
