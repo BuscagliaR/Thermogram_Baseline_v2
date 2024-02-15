@@ -85,7 +85,7 @@ Urine.Working <- Urine.Working %>%
 ```{r}
 ### Save image for easy data reloading // clear all other elements
 rm(list = setdiff(ls(), c('Urine.Working')))
-#save.image('data/Urine_Working.RData') ### This should only be run once
+save.image('data/Urine_Working.RData') ### This should only be run once
 ```
 
 At this time we have our working set that can be loaded (quickly) using

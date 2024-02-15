@@ -1,0 +1,27 @@
+{
+    "id": "47ADF5AA",
+    "path": "~/GitHub/Thermogram_Baseline_v2/character.R",
+    "project_path": "character.R",
+    "type": "r_source",
+    "hash": "3642535060",
+    "contents": "",
+    "dirty": false,
+    "created": 1705943459728.0,
+    "source_on_save": false,
+    "relative_order": 2,
+    "properties": {
+        "tempName": "Untitled1",
+        "source_window_id": "",
+        "Source": "Source",
+        "cursorPosition": "51,27",
+        "scrollLine": "43"
+    },
+    "folds": "",
+    "lastKnownWriteTime": 1707966152,
+    "encoding": "UTF-8",
+    "collab_server": "",
+    "source_window": "",
+    "last_content_update": 1707966152219,
+    "read_only": false,
+    "read_only_alternatives": []
+}

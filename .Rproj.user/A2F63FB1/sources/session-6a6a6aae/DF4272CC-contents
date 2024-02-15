@@ -1,0 +1,94 @@
+load('data/Plasma_48-82.RData')
+
+library(dplyr)
+library(stringr)
+library(tidyverse)
+library(knitr)
+library(forecast)
+library(gridExtra)
+grid.temp <- seq(45, 90, 0.1)
+
+### Setup frame to store all data generated
+Plasma.Final.Data.Inner.48.81 <- data.frame(Temperature = grid.temp)
+endpoints.inner.48.81 <- data.frame()
+
+### loop over all samples and store the dCp with chosen temperature grid
+for(j in 1:n.samples)
+{
+  cat('Working on Sample ', All.IDs[j], 'element ', j,' of', n.samples,' \n')
+  ### select a sample
+  working.sample <- final.plasma %>% 
+    filter(SampleID == All.IDs[j]) %>% 
+    select(Temperature, dCp)
+  ### get a baseline-subtracted and interpolated final result!
+  auto.output <- auto.baseline(x = working.sample,w=30,exclusion.lwr = 48,exclusion.upr = 81, grid.temp = grid.temp, point = "innermost")
+  endpoints <- moving.window(x=working.sample, w=30,exclusion.lwr = 48,exclusion.upr = 81, point.selection = "innermost")
+  endpoints.inner.48.81 <- endpoints.inner.48.81 %>% rbind(data.frame(SampleID = All.IDs[j], lower = endpoints[1], upper = endpoints[2]))
+  Plasma.Final.Data.Inner.48.81 <- Plasma.Final.Data.Inner.48.81 %>% cbind(out = auto.output$dCp)
+  cat("\014")
+}
+
+#Changing Data
+colnames(Plasma.Final.Data.Inner.48.81)[-1] <- All.IDs
+
+thing.inner <- Plasma.Final.Data.Inner.48.81 %>% pivot_longer(names_to="SampleID", values_to = "dCp", 2:73)
+
+thing.inner <- thing.inner %>% mutate(SampleNumber = str_extract(SampleID, '\\d+'), SampleIteration = str_extract(SampleID, '\\D$'))
+
+numbers <- thing.inner %>% pull(SampleNumber) %>% unique()
+
+other.thing <- Plasma.Working.Corrected %>% filter(between(Temperature, 45, 90))
+
+#Graphs
+pdf('generated_output/Plasma_Interpolated_48_81.pdf')
+{
+  g<-NULL
+  for(i in 1:length(numbers)){
+    sample1 <- thing.inner %>% filter(SampleNumber == numbers[i]) %>% mutate(method = str_c("Auto",SampleIteration,sep=" ")) %>% mutate(type = "Auto")
+    sample2 <- other.thing %>% filter(SampleNumber == numbers[i]) %>% mutate(method = str_c("Tech",SampleIteration,sep=" ")) %>% mutate(type = "Not Auto")
+    
+    combinded <- sample1 %>% rbind(sample2)
+    
+    g[[i]]<- ggplot(combinded, aes(Temperature, dCp, color = method, linetype = type))+
+      geom_line()+
+      scale_color_manual(breaks = c("Auto a", "Auto b", "Tech a", "Tech b"),
+                         values=c("green1", "red1", "green4", "red4"))+
+      labs(title = paste0('Final Automated Sample for ', str_sub(numbers[i], 1)))+
+      theme(legend.position = "top",
+            legend.key.height = unit(0.10, 'cm'),
+            legend.key.width = unit(0.30, 'cm'),
+            legend.box.spacing = unit(0.20, 'cm'),
+            legend.margin = margin(1, 1, 1, 1),
+            legend.title = element_text(size=5),
+            legend.text=element_text(size=5),
+            title = element_text(size = 8))
+  }
+  marrangeGrob(g,nrow=4,ncol=2)
+}
+dev.off()
+
+endpoints.inner <- data.frame()
+for(j in 1:n.samples)
+{
+  ### select a sample
+  working.sample <- final.plasma %>% 
+    filter(SampleID == All.IDs[j]) %>% 
+    select(Temperature, dCp)
+  ### get a baseline-subtracted and interpolated final result!
+  auto.output <- moving.window(x = working.sample,w=30,exclusion.lwr = 48,point.selection = "innermost")
+  endpoints.inner <- endpoints.inner %>% rbind(data.frame(sample = All.IDs[j],lower = auto.output[1], upper=auto.output[2]))
+}
+
+write.csv(x=Plasma.Final.Data.Inner.48.81, file = 'generated_output/Plasma_Interpolated_48_81.csv')
+
+new_thing.inner <- thing.inner
+
+new_thing.inner <- new_thing.inner %>% mutate(new_title = str_c(SampleID,"Auto",sep="_"))
+
+new_thing_wide.inner <- new_thing.inner[c("Temperature", "new_title", "dCp")] %>% pivot_wider(names_from = new_title, values_from = dCp)
+
+final.plasma.inner <- inner_join(new_thing_wide.inner,data.set,by="Temperature")
+
+write.csv(x=final.plasma.inner, file = 'generated_output/Plasma_Comparison_Inner.csv')
+
+save.image('data/Plasma_48-82.RData')

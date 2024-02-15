@@ -142,14 +142,14 @@ auto.baseline <- function(x, w = 90, exclusion.lwr = 60, exclusion.upr = 80,
     point.selection = point)
   ### baseline subtraction with auto-selected upr/lwr points
   baseline.output <- baseline.subtraction.byhand(
-    x = working.sample, 
+    x = x, 
     lwr.temp = endpoints$lower, 
     upr.temp = endpoints$upper,
     plot.on = plot.on)
   ### generate a final sample on chosen grid!
   final.sample <- final.sample.interpolate(
     x = baseline.output, 
-    grid.temp = seq(45, 90, 0.1),
+    grid.temp = grid.temp,
     plot.on = plot.on)
   ### return the interpolated baseline-subtracted result
   return(final.sample)

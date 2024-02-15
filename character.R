@@ -5,7 +5,7 @@ devtools::install_github("BuscagliaR/tlbparam")
 library(tlbparam)
 library(dplyr)
 library(stringr)
-?clean_thermograms()
+
 
 untamptered_data <-read.csv("~/GitHub/Thermogram_Baseline_v2/generated_output/innermost_data.csv")
 
@@ -14,30 +14,45 @@ inner <- inner[-1]
 
 clean_thermograms(inner)
 head(t(inner))
+inner <- inner %>% mutate(Temperature = str_c("T", Temperature, sep=""))
+
 inner.t <- t(inner)
 
 
-inner <- inner %>% mutate(Temperature = str_c("T", Temperature, sep=""))
 
 colnames(inner.t) <- inner.t[1,]
 inner.t <- inner.t[-1,]
 inner.t <- as.data.frame(inner.t)
 inner.t <- inner.t %>% mutate(SampleCode = row.names(inner.t))
 thing <- inner.t$SampleCode
-
-urine_char <- clean_thermograms(inner.t, column = "SampleCode",summary = c("tarea", "fwhm", "max", "tpeakf", "peakf", "tpeak1", "peak1", "tpeak2",
-                                                                           "peak2", "tpeak3", "peak3", "P1P2.trough", "tP1P2.trough", "tmax", "tfm",
-                                                                           "peak12ratio", "min", "tmin", "median"))
-urine_char <- load_thermograms(inner.t)
-
-inner.t <- inner.t %>% as.numeric(inner.t)
-
+inner.t$SampleCode <- thing
 inner.t <- data.frame(lapply(inner.t[,1:451], function(x) as.numeric(as.character(x))))
 inner.t$SampleCode <- thing
-str(inner.t)
 
-data <- urine_char[,c(3,456:474)]
+inner.t <- inner.t %>% select("SampleCode",everything())
 
+urine_char <- clean_thermograms(inner.t, column = "SampleCode",summary = c('Width','Area','Max','TMax','TFM','Peak 1','Peak 2','Peak 3','TPeak 1','TPeak 2',
+                                                                           'TPeak 3','Peak 1 / Peak 2', 'Peak 1 / Peak 3', 'Peak 2 / Peak 3',
+                                                                           'Median', 'V1.2', 'TV1.2', 'V1.2 / Peak 1', 'V1.2 / Peak 2', 'V1.2 / Peak 3',
+                                                                           'Min', 'TMin', 'Peak F', 'TPeak F'))
+
+data <- urine_char[,c(3,456:479)]
+
+urine_classes <- readxl::read_excel("~/GitHub/Thermogram_Baseline_v2/data_raw/Lups urine classification 2.1.2024.xlsx", sheet = "Sheet1")
+urine_classes <- urine_classes[,c(1,11)]
+urine_classes$SampleNumber <- as.numeric(urine_classes$Sample)
+
+data <- data %>% mutate(SampleNumber = as.numeric(str_extract(SampleCode, '\\d+')))
+
+final_table <- left_join(urine_classes, data, by = "SampleNumber")
+final_table <- final_table[!is.na(final_table$Disease),]
+
+###ANOVA###
+for(i in 5:(ncol(final_table)+5))
+  test <- aov(final_table[i] ~ Disease, data = final_table)
+  summary(test)
+
+###Graphing###
 
 library(ggplot2)
 first_obs <- untamptered_data %>% select(c("Temperature", "X1a"))
@@ -57,3 +72,6 @@ pdf('generated_output/graphs.pdf')
   }
 }
 dev.off()
+
+write.csv(final_table, file = "generated_output/characteristics_urine.csv")
+save.image("generated_output/characteristics_urine.R")
