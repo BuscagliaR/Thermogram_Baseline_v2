@@ -1,0 +1,136 @@
+---
+title: "ThermogramBaseline Demo"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{ThermogramBaseline Demo}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+library(knitr)
+library(stringr)
+```
+
+Here we load the package and look at the data. Data must be formatted in this way:
+
+```{r setup}
+library(ThermogramBaseline)
+```
+
+```{r, eval=FALSE}
+data(UrineWorking, package = "ThermogramBaseline")
+head(UrineWorking)
+```
+```{r echo=FALSE}
+kable(head(UrineWorking))
+```
+
+
+Each function can only take in one thermogram sample at a time so we must filter for sample 1a and filter between the temperatures 45-90
+
+```{r}
+SampleIDs <- UrineWorking %>% pull(SampleID) %>% unique() %>% as.vector()
+
+Sample.1 <- UrineWorking %>% filter(SampleID == SampleIDs[1]) %>% filter(between(Temperature, 45,90))
+```
+
+Now that we have our first sample, lets get our two endpoints for baseline detection.
+
+```{r, cache=TRUE}
+endpoints <- endpoint.detection(x = Sample.1, w = 90, exclusion.lwr = 60, 
+                                exclusion.upr = 80, point.selection = "innermost")
+```
+```{r echo=FALSE}
+kable(endpoints)
+```
+
+
+The model selected the temperatures 53.24153 and 84.63846 as our endpoints for our baseline subtraction. Next lets subtract the baseline using these endpoints.
+
+```{r}
+baseline <- baseline.subtraction.byhand(x= Sample.1, lwr.temp = endpoints$lower, 
+                                        upr.temp = endpoints$upper, plot.on = FALSE)
+
+```
+
+Now that we have subtracted the baseline, we will interpolate the data onto a grid of set temperatures. Notice plot.on is true by 
+
+```{r}
+final <- final.sample.interpolate(x=baseline,grid.temp = seq(from = 45,to = 90,by = 0.1))
+```
+
+Here we have our final baseline subtracted interpolated sample. We can also use the auto function to complete these in one step. Notice that the plot.on default is false so we must set it to true if we want graphs to appear. 
+
+```{r, cache=TRUE}
+auto <- auto.baseline(x=Sample.1, w=90, exclusion.lwr = 60, exclusion.upr = 80, 
+                      grid.temp = seq(45,90,0.1),plot.on = TRUE)
+```
+
+Lastly, lets run all 781 thermograms through our function and graph the end product. 
+
+```{r, eval=FALSE}
+### Set our grid of temperatures to interpolate onto
+grid.temp <- seq(from = 45,to = 90, by = 0.1)
+
+### Create empty data frame to store results 
+Final.Results <- data.frame(Temperature = grid.temp)
+
+### Store all sample IDs and how many samples we need to analyze.
+All.IDs <- UrineWorking %>% pull(SampleID) %>% unique() %>% as.vector()
+n.samples <- length(All.IDs)
+
+### For loop for running all the samples through the algorithm
+for(j in 1:n.samples)
+{
+  cat('Working on Sample ', All.IDs[j], 'element ', j,' of', n.samples,' \n')
+  ### select a sample
+  working.sample <- UrineWorking %>% 
+    filter(SampleID == All.IDs[j]) %>% 
+    select(Temperature, dCp)
+  ### get a baseline-subtracted and interpolated final result!
+  auto.output <- auto.baseline(x = working.sample, grid.temp = grid.temp)
+  Final.Results <- Final.Results %>% cbind(out = auto.output$dCp)
+  cat("\014")
+}
+
+### Rename the column names to the correct 
+colnames(Final.Results)[-1] <- All.IDs
+
+### The below line will save the resulting data frame as a csv file
+### Only run this line once
+#write.csv(x = Final.Results, file = 'Final.Results.csv')
+```
+
+The code above provides a data frame with 781 baseline subtracted thermograms interpolated all to the same temperature grid. Below it is shown how to produce a graph of each thermogram output.
+
+```{r, eval=FALSE}
+pdf('/Final.Results.pdf')
+{
+  for(j in 1:length(All.IDs))
+  {
+    g1 <- Final.Results %>% select(Temperature, All.IDs[j]) %>% 
+      ggplot(aes(x = Temperature, y = .[,2])) + 
+      geom_point() + 
+      labs(title = paste0('Final Automated Sample for ', str_sub(All.IDs[j], 2)))
+    print(g1)
+  }
+}
+dev.off()
+```
+
+
+
+
+
+
+
+
+
+
+
+

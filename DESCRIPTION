@@ -1,0 +1,22 @@
+Package: ThermogramBaseline
+Title: Automates Thermogram Baseline Subtraction
+Version: 0.0.0.9000
+Authors@R: 
+    person("Robert", "Buscaglia", , "Robert.Buscaglia@nau.edu", role = c("aut", "cre"),
+           comment = c(ORCID = "YOUR-ORCID-ID"))
+Description: The package consists of functions that help automate the thermogram cleaning process. The autobaseline function will detect the two endpoints of the curve, and subtract the baseline from there. The final result is interpolated on a set temperature grid. 
+License: `use_mit_license()`, `use_gpl3_license()` or friends to pick a
+    license
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.3.1
+Depends: 
+    R (>= 2.10),
+    dplyr,
+    ggplot2
+LazyData: true
+Imports: tidyr
+Suggests: 
+    knitr,
+    rmarkdown
+VignetteBuilder: knitr
