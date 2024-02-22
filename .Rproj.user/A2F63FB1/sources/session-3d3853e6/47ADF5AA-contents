@@ -47,10 +47,14 @@ data <- data %>% mutate(SampleNumber = as.numeric(str_extract(SampleCode, '\\d+'
 final_table <- left_join(urine_classes, data, by = "SampleNumber")
 final_table <- final_table[!is.na(final_table$Disease),]
 
+load("generated_output/characteristics_urine.R")
+
 ###ANOVA###
-for(i in 5:(ncol(final_table)+5))
-  test <- aov(final_table[i] ~ Disease, data = final_table)
-  summary(test)
+for(i in 5:(ncol(final_table))){
+  test <- aov(final_table[,i] ~ Disease, data = final_table)
+  broom::tidy(test)[1,6]
+}
+
 
 ###Graphing###
 
