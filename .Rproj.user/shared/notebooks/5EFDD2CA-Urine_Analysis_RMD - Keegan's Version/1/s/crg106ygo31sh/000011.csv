@@ -1,8 +1,0 @@
-"0","### select a sample"
-"0","working.sample <- Urine.Working.Final %>% filter(SampleID == '1a') %>% "
-"0","  select(Temperature, dCp)"
-"0","### baseline subtraction with by-hand upr/lwr selection"
-"0","baseline.output <- baseline.subtraction.byhand("
-"0","  x = working.sample, "
-"0","  lwr.temp = 56, "
-"0","  upr.temp = 86)"

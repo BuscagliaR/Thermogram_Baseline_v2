@@ -1,4 +1,0 @@
-"0","### Store all sampleID for future use"
-"0","All_Urine_ID <- Urine.Working %>% pull(SampleID) %>% unique() %>% as.vector()"
-"2","Error in pull(., SampleID) : object 'Urine.Working' not found
-"

@@ -1,6 +1,0 @@
-"0","### Splines for lower/upper regions"
-"0","spline.lower <- smooth.spline(work.lower$Temperature, work.lower$dCp, cv = TRUE)"
-"0","spline.upper <- smooth.spline(work.upper$Temperature, work.upper$dCp, cv = TRUE)"
-"0","### Store data for graphing"
-"0","spline.lower.fit <- data.frame(Temperature = work.lower$Temperature, fit = spline.lower$y)"
-"0","spline.upper.fit <- data.frame(Temperature = work.upper$Temperature, fit = spline.upper$y)"

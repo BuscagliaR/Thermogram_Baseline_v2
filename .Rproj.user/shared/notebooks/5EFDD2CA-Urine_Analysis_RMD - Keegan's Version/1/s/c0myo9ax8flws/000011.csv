@@ -1,4 +1,0 @@
-"0","spline.df <- data.frame(Temperature = working.sample$Temperature, fit = full.spline.fit$y)"
-"0","ggplot(working.sample, aes(x = Temperature, y = dCp)) + geom_point() + "
-"0","  geom_line(data = spline.df, aes(x = Temperature, y = fit), color = 'red') +"
-"0","  labs(title = 'Full Curve Spline Fit')"

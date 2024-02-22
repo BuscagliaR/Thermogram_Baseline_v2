@@ -1,6 +1,0 @@
-"0","Fit.Variation <- data.frame(Temperature = working.sample$Temperature,"
-"0","                            Diff = resid(full.spline.fit))"
-"0","ggplot(Fit.Variation, aes(x = Temperature, y = Diff)) + geom_point() +"
-"0","  geom_segment(x = 55, xend = 58, y = 0.05, yend = 0.05, color = 'red', linewidth=2) +"
-"0","  geom_segment(x = 82, xend = 85, y = 0.05, yend = 0.05, color = 'blue', linewidth=2) +"
-"0","  labs(title = 'Variation based on Sline Fit')"

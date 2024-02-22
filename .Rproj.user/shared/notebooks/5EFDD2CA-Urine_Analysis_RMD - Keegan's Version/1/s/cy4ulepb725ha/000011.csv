@@ -1,9 +1,0 @@
-"0","### Developing Splines Example"
-"0","lower <- 56 # All points lower than this temperature considered baseline"
-"0","upper <- 86 # All points higher than this temperature considered baseline"
-"0",""
-"0","### Extract the baseline regions"
-"0","work.lower <- working.sample %>% filter(Temperature < lower)"
-"2","Error in filter(., Temperature < lower) : 
-  object 'working.sample' not found
-"

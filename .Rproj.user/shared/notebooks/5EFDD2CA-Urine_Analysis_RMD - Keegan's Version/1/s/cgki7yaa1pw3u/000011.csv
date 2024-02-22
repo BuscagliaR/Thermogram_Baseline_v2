@@ -1,4 +1,0 @@
-"0","### View of spline fit on lower region"
-"0","work.lower %>% ggplot(aes(x = Temperature, y = dCp)) + geom_point() + "
-"0","  geom_line(data = spline.lower.fit, aes(x = Temperature, y = fit), color = 'red') + "
-"0","  labs(title = 'Spline Fit Lower Region')"

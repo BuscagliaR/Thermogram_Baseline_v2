@@ -1,7 +1,0 @@
-"0","### store baseline as one unit"
-"0","working.baseline.final <- rbind(spline.lower.fit, spline.connect.fit, spline.upper.fit)"
-"0","### join for tidyverse simplification"
-"0","baseline.join <- full_join(working.sample, working.baseline.final, by = 'Temperature')"
-"0","### final sample!"
-"0","final.sample <- baseline.join %>% mutate(final.dcp = dCp - fit) %>%"
-"0","  select(Temperature, final.dcp) %>% rename(dCp = final.dcp)"

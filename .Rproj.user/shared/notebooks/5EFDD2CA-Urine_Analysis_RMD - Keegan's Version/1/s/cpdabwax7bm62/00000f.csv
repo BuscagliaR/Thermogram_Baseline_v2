@@ -1,4 +1,0 @@
-"0","### select sample"
-"0","working.sample <- Urine.Working.Final %>% filter(SampleID == '1a') %>% select(Temperature, dCp)"
-"0","### fit a CV spline to entire raw curve"
-"0","full.spline.fit <- smooth.spline(working.sample$Temperature, working.sample$dCp, cv=TRUE)"
